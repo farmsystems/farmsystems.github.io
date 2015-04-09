@@ -1,0 +1,52 @@
+
+#completed_trades_table {
+    border-bottom: 0;
+}
+
+#completed_trades_table thead tr td {
+    border: 0;
+}
+
+/* Player lists */
+#completed_trades_table ul {
+    padding: 0 10px 10px 17px;
+    margin: 0;
+}
+
+/* Headers */
+#completed_trades_table thead td {
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Occurred Column */
+#completed_trades_table tr td:first-child {
+    vertical-align: top;
+    padding-right: 10px;
+    text-align: center;
+}
+
+/* Team 1 */
+#completed_trades_table tr td:nth-child(2) {
+    vertical-align: top;
+    text-align: center;
+}
+
+/* Team 1 offerings */
+#completed_trades_table tbody tr td:nth-child(3) {
+    vertical-align: top;
+    padding-left: 4%;
+}
+
+/* Team 2 */
+#completed_trades_table tr td:nth-child(4) {
+    vertical-align: top;
+    padding-left: 10px;
+    text-align: center;
+}
+
+/* Team 2 offerings */
+#completed_trades_table tbody tr td:nth-child(5) {
+    vertical-align: top;
+    padding-left: 4%;
+}
