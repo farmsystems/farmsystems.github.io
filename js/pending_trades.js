@@ -1,65 +1,65 @@
 
-var pending_config = {
-    table_headers: ['Occurred', 'Team 1', 'Offering', 'Team 2', 'Offering'],
-    occurred_col: 0,
-    team1_col: 1,
-    team1_offering_col: 2,
-    team2_col: 3,
-    team2_offering_col: 4
+var PendingTrades = function(pending_table_id) {
+    this._table_id = pending_table_id;
+    this.table = $('#' + pending_table_id);
+    this.active_datatable = null;
+    this.config = {
+        table_headers: ['Occurred', 'Team 1', 'Offering', 'Team 2', 'Offering'],
+        occurred_col: 0,
+        team1_col: 1,
+        team1_offering_col: 2,
+        team2_col: 3,
+        team2_offering_col: 4
+    };
 };
 
 
-var pending_elements = {
-    table: null,
-    active_datatable: null
+PendingTrades.prototype.init = function() {
+    this._selectElements();
 };
 
 
-function selectPendingElements() {
-    pending_elements.table = $('#pending_trades_table');
-}
-
-
-function initPending() {
-    selectPendingElements();
-}
-
-
-function clearPendingTable() {
-    if (pending_elements.active_datatable) {
-        pending_elements.active_datatable.destroy();
-    }
-    pending_elements.table.empty();
-}
-
-
-function buildPendingTable(trades) {
-    addPendingHeaders();
+PendingTrades.prototype.buildTable = function(trades) {
+    this._addHeaders();
+    var that = this;
     $.each(trades, function(index, trade) {
-        addTradeToPendingTable(trade);
-    });
-}
+        that._addTradeToTable(trade);
+    })
+};
 
 
-function replacePendingData(data) {
-    clearPendingTable();
-    buildPendingTable(data);
-}
+PendingTrades.prototype.replaceData = function(data) {
+    this._clearTable();
+    this.buildTable(data);
+};
 
 
-function addPendingHeaders(){
+PendingTrades.prototype._selectElements = function() {
+    this.table = $('#' + this._table_id);
+};
+
+
+PendingTrades.prototype._clearTable = function() {
+    if (this.active_datatable) {
+        this.active_datatable.destroy();
+    }
+    this.table.empty();
+};
+
+
+PendingTrades.prototype._addHeaders = function() {
     var headers = $('<thead></thead>');
     var tr = $('<tr></tr>');
-    $.each(pending_config.table_headers, function(index, header) {
+    $.each(this.config.table_headers, function(index, header) {
         var td = $('<td></td>').html(header);
         tr.append(td);
     });
     headers.append(tr);
-    pending_elements.table.append(headers);
-}
+    this.table.append(headers);
+};
 
 
-function addPendingRow(teams, team1_offering, team2_offering, timestamp){
+PendingTrades.prototype._addRow = function(teams, team1_offering, team2_offering, timestamp) {
     var row = $('<tr></tr>');
     var occurred = $('<td></td>').html(timestamp);
     var team1_name = $('<td></td>').html((teams[0]).toUpperCase());
@@ -79,45 +79,48 @@ function addPendingRow(teams, team1_offering, team2_offering, timestamp){
 
     row.append(team2_name);
     row.append(bs2);
-    pending_elements.table.append(row);
-}
+    this.table.append(row);
+};
 
 
-function addTradeToPendingTable(trade_details){
+PendingTrades.prototype._addTradeToTable = function(trade_details) {
     var team1 = trade_details.team1;
     var team2 = trade_details.team2;
     var teams = [team1.team, team2.team];
     var team1_players = [];
     var team2_players = [];
     $.each(team1.offering, function(index, player_id){
-        team1_players.push(getPlayerFormat(player_id));
+        team1_players.push(config.getPlayerFormat(player_id));
     });
     $.each(team2.offering, function(index, player_id){
-        team2_players.push(getPlayerFormat(player_id));
+        team2_players.push(config.getPlayerFormat(player_id));
     });
-    addPendingRow(teams, team1_players, team2_players, trade_details.timestamp);
-}
+    this._addRow(teams, team1_players, team2_players, trade_details.timestamp);
+};
 
-
-function loadPendingTrades() {
-    selectPendingElements();
+/**
+ * Load Pending trades and build/replace the table with the data
+ */
+PendingTrades.prototype.load = function() {
+    this._selectElements();
+    var that = this;
     $.ajax({
-        url: config.mongolabURL + config.pending_tradesURL + '?apiKey=' + config.mongolabApiKey,
+        url: config.config.mongolabURL + config.config.pending_tradesURL + '?apiKey=' + config.config.mongolabApiKey,
         dataType: 'json',
         type: 'GET'
     }).done(function(pending_trades){
-        if (pending_elements.active_datatable) {
-            replacePendingData(pending_trades);
+        if (that.active_datatable) {
+            that.replaceData(pending_trades);
         } else {
-            buildPendingTable(pending_trades);
+            that.buildTable(pending_trades);
         }
-        pending_elements.active_datatable = pending_elements.table.DataTable({
+        that.active_datatable = that.table.DataTable({
             "sDom": 'ltr',
             "bLengthChange": false,
             "columnDefs": [{
-                "targets": pending_config.occurred_col, "width": '20%'
+                "targets": that.config.occurred_col, "width": '20%'
             },{
-                "targets": [ pending_config.team1_offering_col, pending_config.team2_offering_col ],
+                "targets": [ that.config.team1_offering_col, that.config.team2_offering_col ],
                 "orderable": false
             }],
             "order": [[ 0, "desc" ]],
@@ -126,9 +129,4 @@ function loadPendingTrades() {
             }
         });
     });
-}
-
-var pending_trades = {
-    init: initPending,
-    load: loadPendingTrades
 };

@@ -1,16 +1,27 @@
-var trades_config = {
-    num_propsect_spots: 6,
-    tradeSentMsg_success: 'The trade proposal was successfully submitted (You can view it in <i>Pending Trades</i>)'
+
+var SubmitTrades = function(submit_table_id, team1_id, team2_id) {
+    this._table_id = submit_table_id;
+    this._team1_id = team1_id;
+    this._team2_id = team2_id;
+    this.table = $('#' + submit_table_id);
+    this.active_datatable = null;
+    this.config = {
+        num_propsect_spots: 6,
+        tradeSentMsg_success: 'The trade proposal was successfully submitted (You can view it in <i>Pending Trades</i>)'
+    };
+    this.init();
 };
 
-function initTrades() {
-    $('#team1').chosen();
-    $('#team2').chosen();
-    $('#submit_trade_form').find('tbody').find('select').chosen({display_disabled_options: false});
-    teamSelection();
-}
 
-function sortJsonPlayers(a, b) {
+SubmitTrades.prototype.init = function() {
+    $('#' + this._team1_id).chosen();
+    $('#' + this._team2_id).chosen();
+    $('#' + this._table_id).find('tbody').find('select').chosen({display_disabled_options: false});
+    this._teamSelection();
+};
+
+
+SubmitTrades.prototype.sortJsonPlayers = function(a, b) {
     if (!('player' in a)) {
         return 1;
     } else if (!('player' in b)) {
@@ -21,14 +32,17 @@ function sortJsonPlayers(a, b) {
     var a_last = a_names[a_names.length - 1];
     var b_last = b_names[b_names.length - 1];
     return (a_last < b_last ? -1 : (a_last > b_last ? 1 : 0));
-}
+};
 
-function getTeamProspects(team, column) {
+
+SubmitTrades.prototype.getTeamProspects = function(team, column) {
     var query = encodeURIComponent(JSON.stringify({
         "team" : team
     }));
+    var that = this;
+    var table_id = this._table_id;
     $.ajax({
-        url: config.mongolabURL + config.team_prospectsURL + '?q=' + query + '&apiKey=' + config.mongolabApiKey,
+        url: config.config.mongolabURL + config.config.team_prospectsURL + '?q=' + query + '&apiKey=' + config.config.mongolabApiKey,
         dataType: 'json',
         type: 'GET'
     }).done(function(data){
@@ -36,9 +50,9 @@ function getTeamProspects(team, column) {
         $.each(data, function(index, player){
             prospects.push(player);
         });
-        prospects.sort(sortJsonPlayers);
+        prospects.sort(that.sortJsonPlayers);
 
-        var prospect_selects = $('#submit_trade_form')
+        var prospect_selects = $('#' + table_id)
             .find('tbody')
             .find('td:nth-child(' + (column + 1) + ')')
             .find('select');
@@ -58,31 +72,33 @@ function getTeamProspects(team, column) {
         prospect_selects.append('<option value="none">[None]</option>');
         $('.chosen-select').trigger("chosen:updated");
     });
-}
+};
+
 
 /**
  * Returns all selected players including 'No Prospects' so take that into account, but not 'None'
  * @param column
  * @returns {Array}
  */
-function getSelectedPlayers(column) {
+SubmitTrades.prototype.getSelectedPlayers = function(column) {
     var player_ids = [];
-    for(var i = 1; i <= trades_config.num_propsect_spots; ++i) {
+    for(var i = 1; i <= this.config.num_propsect_spots; ++i) {
         var player_id = $('#team' + column + '-p' + i).find('option:selected').val();
         if (player_id !== '' && player_id !== 'none') {
             player_ids.push(player_id);
         }
     }
     return player_ids;
-}
+};
+
 
 /**
  * Get prospects who are not selected (by determine who are selected)
  * @param column                team/column #
  * @param _selected_players     (optional)
  */
-function getNonSelectedPlayers(column, _selected_players) {
-    var selected_players = typeof _selected_players !== 'undefined' ? _selected_players : getSelectedPlayers(column);
+SubmitTrades.prototype.getNonSelectedPlayers = function(column, _selected_players) {
+    var selected_players = typeof _selected_players !== 'undefined' ? _selected_players : this.getSelectedPlayers(column);
     var player_ids = [];
     $('#team' + column + '-p1').find('option').each(function(index, option){
         var player_id = option.getAttribute('value');
@@ -91,17 +107,18 @@ function getNonSelectedPlayers(column, _selected_players) {
         }
     });
     return player_ids;
-}
+};
+
 
 /**
  * Enables and disables players in the select options
  * @param column
  * @param exclude_select    The current select input
  */
-function updatePlayerSelects(column, exclude_select) {
-    var disable_players = getSelectedPlayers(column);
-    var enabled_players = getNonSelectedPlayers(column, disable_players);
-    var form = $('#submit_trade_form');
+SubmitTrades.prototype.updatePlayerSelects = function(column, exclude_select) {
+    var disable_players = this.getSelectedPlayers(column);
+    var enabled_players = this.getNonSelectedPlayers(column, disable_players);
+    var form = $('#' + this._table_id);
     var prospect_selects = form.find('tbody')
         .find('td:nth-child(' + (column + 1) + ')');
 
@@ -120,17 +137,18 @@ function updatePlayerSelects(column, exclude_select) {
         }
     });
     $('.chosen-select').trigger("chosen:updated");
-}
+};
 
-function clearTable() {
-    var team1_select = $('#team1');
-    var team2_select = $('#team2');
+
+SubmitTrades.prototype.clearTable = function() {
+    var team1_select = $('#' + this._team1_id);
+    var team2_select = $('#' + this._team2_id);
     team1_select.val('');
     team1_select.find('option').removeAttr('disabled');
     team2_select.val('');
     team2_select.find('option').removeAttr('disabled');
 
-    var trade_form = $('#submit_trade_form');
+    var trade_form = $('#' + this._table_id);
     var column1 = trade_form.find('tbody').find('td:nth-child(2)').find('select');
     var column2 = trade_form.find('tbody').find('td:nth-child(3)').find('select');
     column1.empty();
@@ -140,70 +158,76 @@ function clearTable() {
     column2.append('<option></option>');
 
     $('.chosen-select').trigger("chosen:updated");
-}
+};
 
-function teamSelection() {
-    $('#team1').change(function() {
-        var team = $('#team1').find('option:selected').val();
+
+SubmitTrades.prototype._teamSelection = function() {
+    var team1_id = this._team1_id;
+    var team2_id = this._team2_id;
+    var that = this;
+    $('#' + team1_id).change(function() {
+        var team = $('#' + team1_id).find('option:selected').val();
         // Disable select in other selector
-        var team2 = $('#team2');
+        var team2 = $('#' + team2_id);
         team2.find('option[value!="' + team + '"]').removeAttr('disabled');
         team2.find('option[value="' + team + '"]').attr('disabled', 'disabled');
         $('.chosen-select').trigger("chosen:updated");
 
         // Get Prospects for menu
-        getTeamProspects(team, 1);
+        that.getTeamProspects(team, 1);
     });
 
-    $('#team2').change(function() {
-        var team = $('#team2').find('option:selected').val();
+    $('#' + team2_id).change(function() {
+        var team = $('#' + team2_id).find('option:selected').val();
         // Disable select in other selector
-        var team1 = $('#team1');
+        var team1 = $('#' + team1_id);
         team1.find('option[value!="' + team + '"]').removeAttr('disabled');
         team1.find('option[value="' + team + '"]').attr('disabled', 'disabled');
         $('.chosen-select').trigger("chosen:updated");
 
         // Get Prospects for menu
-        getTeamProspects(team, 2);
+        that.getTeamProspects(team, 2);
     });
 
-    $('#submit_trade_form').find('tbody').find('td:nth-child(2)').change(function(e) {
-        updatePlayerSelects(1, this.id);
+    var submit_trade_form = $('#' + this._table_id);
+
+    submit_trade_form.find('tbody').find('td:nth-child(2)').change(function(e) {
+        that.updatePlayerSelects(1, this.id);
     });
 
-    $('#submit_trade_form').find('tbody').find('td:nth-child(3)').change(function() {
-        updatePlayerSelects(2, this.id);
+    submit_trade_form.find('tbody').find('td:nth-child(3)').change(function() {
+        that.updatePlayerSelects(2, this.id);
     });
-}
+};
 
-function sendTradeProposal(trade_proposal_json) {
+
+SubmitTrades.prototype.sendTradeProposal = function(trade_proposal_json) {
+    var that = this;
     return $.ajax({
-        url: config.mongolabURL + config.pending_tradesURL + '?apiKey=' + config.mongolabApiKey,
+        url: config.config.mongolabURL + config.config.pending_tradesURL + '?apiKey=' + config.config.mongolabApiKey,
         data: trade_proposal_json,
         contentType: 'application/json',
         type: 'POST'
     }).done(function(data){
-        showSuccess('Success', trades_config.tradeSentMsg_success);
-        clearTable();
-        return 1;
+        config.showSuccess('Success', that.config.tradeSentMsg_success);
+        that.clearTable();
+        return true;
     }).fail(function(){
-        showError('Error', 'Failed to send Trade Proposal (Network connection issues?)');
+        config.showError('Error', 'Failed to send Trade Proposal (Network connection issues?)');
+        return false;
     });
-}
+};
 
 /**
  *
  * @returns boolean (false) if error | json
  */
-function getTradeProposalAsJson() {
-    var team1 = $('#team1').find('option:selected').val();
-    var team2 = $('#team2').find('option:selected').val();
+SubmitTrades.prototype.getTradeProposalAsJson = function() {
+    var team1 = $('#' + this._team1_id).find('option:selected').val();
+    var team2 = $('#' + this._team2_id).find('option:selected').val();
 
     var team1_players = getSelectedPlayers(1);
     var team2_players = getSelectedPlayers(2);
-
-    console.log(team1_players);
-    console.log(team2_players);
 
     if ((team1_players.length === 0 || team2_players.length === 0) ||
         ($.inArray('No Prospects', team1_players) >= 0 && $.inArray('No Prospects', team2_players) >= 0)) {
@@ -219,13 +243,6 @@ function getTradeProposalAsJson() {
             'team': team2,
             'offering': $.inArray('No Prospects', team2_players) < 0 ? team2_players : ['No Prospects']
         },
-        'timestamp': getPCT().toLocaleString()
+        'timestamp': config.getPCT().toLocaleString()
     }
-}
-
-var trades = {
-    init: initTrades,
-    getTradeProposal: getTradeProposalAsJson,
-    resetTrade: clearTable,
-    sendTradeProposal: sendTradeProposal
 };
