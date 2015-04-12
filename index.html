@@ -40,7 +40,7 @@
             <table id="prospects_table"></table>
             <table id="pending_trades_table" class="hidden"></table>
             <table id="completed_trades_table" class="hidden"></table>
-            <div id="submit_trade_sec">
+            <div id="submit_trade_sec" class="hidden">
                 <table id="submit_trade_form">
                     <thead>
                     <tr>
@@ -166,8 +166,7 @@
     </main>
     <script>
         $(document).ready(function() {
-            var farmsystems = new Farmsystem();
-            farmsystems.start();
+            new Farmsystem().start();
         });
     </script>
 </body>
