@@ -185,6 +185,7 @@ Farmsystem.prototype.posNum = function(pos) {
     }
 };
 
+
 Farmsystem.prototype.selectElements = function() {
     config.elements.content = $('#content');
     this.elements.table = $('#' + this._table_id);
@@ -219,6 +220,7 @@ Farmsystem.prototype.init = function() {
     this.selectElements();
     this.attachBtnActions();
 };
+
 
 Farmsystem.prototype.start = function() {
     config.loadAllProspects();
@@ -269,7 +271,9 @@ Farmsystem.prototype.start = function() {
 /*
  *  Table
  */
-
+/**
+ * Destroy the datatable and clear the rows
+ */
 Farmsystem.prototype.clearTable = function() {
     if (this.elements.active_datatable) {
         this.elements.active_datatable.destroy();
@@ -313,6 +317,7 @@ Farmsystem.prototype.showTeamData = function(team) {
     });
 };
 
+
 Farmsystem.prototype.showAllData = function() {
     var that = this;
     $.ajax({
@@ -342,6 +347,7 @@ Farmsystem.prototype.showAllData = function() {
     });
 };
 
+
 Farmsystem.prototype.buildTable = function(data) {
     this._addHeaders();
     var that = this;
@@ -350,10 +356,12 @@ Farmsystem.prototype.buildTable = function(data) {
     })
 };
 
+
 Farmsystem.prototype.replaceData = function(data) {
     this.clearTable();
     this.buildTable(data);
 };
+
 
 Farmsystem.prototype._addHeaders = function(){
     var headers = $('<thead></thead>');
@@ -391,6 +399,7 @@ Farmsystem.prototype._addRow = function(row_data){
     this.elements.table.append(row);
 };
 
+
 Farmsystem.prototype.showProspectsTable = function() {
     $('#' + config.message_id).remove();
     $('.active').removeClass('active');
@@ -399,6 +408,7 @@ Farmsystem.prototype.showProspectsTable = function() {
     config.elements.pending_trades_table.addClass('hidden');
     config.elements.completed_trades_table.addClass('hidden');
 };
+
 
 Farmsystem.prototype.showCompletedTrades = function() {
     $('#' + config.message_id).remove();
@@ -409,6 +419,7 @@ Farmsystem.prototype.showCompletedTrades = function() {
     config.elements.completed_trades_table.removeClass('hidden');
 };
 
+
 Farmsystem.prototype.showPendingTrades = function() {
     $('#' + config.message_id).remove();
     $('.active').removeClass('active');
@@ -418,6 +429,7 @@ Farmsystem.prototype.showPendingTrades = function() {
     config.elements.completed_trades_table.addClass('hidden');
 };
 
+
 Farmsystem.prototype.showSubmitTrades = function() {
     $('#' + config.message_id).remove();
     $('.active').removeClass('active');
@@ -426,6 +438,7 @@ Farmsystem.prototype.showSubmitTrades = function() {
     config.elements.pending_trades_table.addClass('hidden');
     config.elements.completed_trades_table.addClass('hidden');
 };
+
 
 /*
  *  Interaction
@@ -515,6 +528,7 @@ Farmsystem.prototype.attachBtnActions = function() {
     // Button in the submit trades section
     config.elements.submit_trade_btn.on('click', function(e) {
         e.preventDefault();
+        config.showSavingBtn(config.elements.submit_trade_btn, 'Submitting...');
         var trade_proposal_json = that.submit_trades.getTradeProposalAsJson();
         if (trade_proposal_json) {
             that.submit_trades.sendTradeProposal(JSON.stringify(trade_proposal_json));
@@ -528,10 +542,3 @@ Farmsystem.prototype.attachBtnActions = function() {
         that.submit_trades.clearTable();
     });
 };
-
-
-
-$(document).ready(function() {
-    var farmsystems = new Farmsystem();
-    farmsystems.start();
-});

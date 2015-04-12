@@ -1,0 +1,134 @@
+/* * * * * *
+ *  Buttons
+ * * * * * */
+
+.last-button {
+    margin-bottom: 30px;
+}
+
+.button {
+    background-color: #00483A;
+    color: #fff;
+    margin-top: 30px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    width: 83%;
+    cursor: pointer;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border: 1px solid #00483A;
+    border-radius: 2px;
+    display: block;
+    text-decoration: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: bold;
+}
+
+.button:hover {
+    background-color: #006957;
+    color: #fff;
+    text-decoration: none;
+}
+
+.button:active {
+    background-color: #fff;
+    color: #006957;
+    border-color: #006957;
+    text-decoration: none;
+}
+
+.menu-button {
+    box-shadow: 0 3px 17px 0 rgba(0, 0, 0, 0.2);
+}
+
+.menu-button:hover {
+    transition: 0.3s ease all;
+    box-shadow: 0 5px 25px 0 rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+}
+
+.menu-button:active {
+    transition: 0.3s ease all;
+    box-shadow: none;
+    transform: none;
+}
+
+.non-team {
+    background-color: #14C239;
+}
+
+.non-team:hover {
+    background-color: #18d545;
+}
+
+.non-team:active {
+    background-color: #fff;
+    color: #18d545;
+    border-color: #18d545;
+}
+
+.active {
+    background-color: #FFBE00;
+    cursor: default;
+    text-decoration: none;
+    pointer-events: none;
+}
+
+.active:hover {
+    background-color: #FFBE00;
+    box-shadow: 0 3px 17px 0 rgba(0, 0, 0, 0.2);
+    transition: none;
+    transform: none;
+}
+
+.active:active {
+    background-color: #FFBE00;
+    color: #fff;
+    border: 1px solid #00483A;
+}
+
+.submit {
+    background-color: #1684d2;
+    border-color: #1564a3;
+}
+
+.submit:hover {
+    background-color: #168adb;
+    color: #fff;
+}
+
+.submit:active {
+    color: #fff;
+}
+
+.cancel {
+    background-color: #ff2f23;
+    border-color: #cb3f36;
+}
+
+.cancel:hover {
+    background-color: #ff6054;
+}
+
+.cancel:active {
+    background-color: #fff;
+    color: #ff6054;
+    border-color: #ff6054;
+}
+
+.saving:hover {
+    background-color: rgba(22, 132, 210, 0.53);
+    border-color: #1564a3;
+}
+
+.saving:active {
+    color: #fff;
+}
+
+.saving {
+    background-color: rgba(22, 132, 210, 0.53);
+    border-color: #1564a3;
+    cursor: wait;
+}

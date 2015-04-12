@@ -37,7 +37,11 @@ var Config = function(message_id) {
     this.message_id = message_id ? message_id : 'message';
 };
 
-
+/**
+ * Show an Error message pop up
+ * @param header
+ * @param message
+ */
 Config.prototype.showError = function(header, message) {
     $('#' + this.message_id).remove();
     var error_msg = $('<div></div>').attr('id', 'message')
@@ -61,6 +65,11 @@ Config.prototype.showError = function(header, message) {
     this.elements.content.append(error_msg);
 };
 
+/**
+ * Show a Success message pop up
+ * @param header
+ * @param message
+ */
 Config.prototype.showSuccess = function(header, message) {
     $('#' + this.message_id).remove();
     var error_msg = $('<div></div>').attr('id', 'message')
@@ -84,6 +93,10 @@ Config.prototype.showSuccess = function(header, message) {
     this.elements.content.append(error_msg);
 };
 
+/**
+ * Load all prospects into the config prospects data for lookup
+ * @param callback
+ */
 Config.prototype.loadAllProspects = function(callback) {
     var that = this;
     $.ajax({
@@ -112,6 +125,11 @@ Config.prototype.loadAllProspects = function(callback) {
     });
 };
 
+/**
+ * Return the player's Name, MLB team, and position as a formated string
+ * @param player_id
+ * @returns {*}
+ */
 Config.prototype.getPlayerFormat = function(player_id) {
     if (player_id === 'No Prospects') {
         return '[No Prospects]';
@@ -124,6 +142,10 @@ Config.prototype.getPlayerFormat = function(player_id) {
     return prospect.player + ' - ' + prospect.mlb_team + ' - ' + prospect.pos;
 };
 
+/**
+ * Get Current Datetime for pacific coast
+ * @returns {Date}
+ */
 Config.prototype.getPCT = function() {
     var offset = 3; // offset of PCT to UTC
     var d = new Date();
@@ -138,6 +160,7 @@ Config.prototype.getPCT = function() {
     return new Date(utc + (3600000*offset))
 };
 
+
 Config.prototype.getUrlParameter = function(sParam) {
     var sPageURL = window.location.search.substring(1);
     var sURLVariables = sPageURL.split('&');
@@ -148,6 +171,20 @@ Config.prototype.getUrlParameter = function(sParam) {
         }
     }
     return '';
+};
+
+
+Config.prototype.showSavingBtn = function(btn_element, saving_text) {
+    btn_element.addClass('saving');
+    btn_element.attr('text', btn_element.text());
+    btn_element.html(saving_text);
+};
+
+
+Config.prototype.restoreSavingBtn = function(btn_element) {
+    btn_element.removeClass('saving');
+    btn_element.html(btn_element.attr('text'));
+    btn_element.removeAttr('text');
 };
 
 var config = new Config();

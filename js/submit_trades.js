@@ -201,6 +201,9 @@ SubmitTrades.prototype._teamSelection = function() {
 };
 
 
+
+
+
 SubmitTrades.prototype.sendTradeProposal = function(trade_proposal_json) {
     var that = this;
     return $.ajax({
@@ -211,9 +214,11 @@ SubmitTrades.prototype.sendTradeProposal = function(trade_proposal_json) {
     }).done(function(data){
         config.showSuccess('Success', that.config.tradeSentMsg_success);
         that.clearTable();
+        config.restoreSavingBtn(config.elements.submit_trade_btn);
         return true;
     }).fail(function(){
         config.showError('Error', 'Failed to send Trade Proposal (Network connection issues?)');
+        config.restoreSavingBtn(config.elements.submit_trade_btn);
         return false;
     });
 };
@@ -226,8 +231,8 @@ SubmitTrades.prototype.getTradeProposalAsJson = function() {
     var team1 = $('#' + this._team1_id).find('option:selected').val();
     var team2 = $('#' + this._team2_id).find('option:selected').val();
 
-    var team1_players = getSelectedPlayers(1);
-    var team2_players = getSelectedPlayers(2);
+    var team1_players = this.getSelectedPlayers(1);
+    var team2_players = this.getSelectedPlayers(2);
 
     if ((team1_players.length === 0 || team2_players.length === 0) ||
         ($.inArray('No Prospects', team1_players) >= 0 && $.inArray('No Prospects', team2_players) >= 0)) {
