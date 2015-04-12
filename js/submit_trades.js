@@ -16,8 +16,11 @@ var SubmitTrades = function(submit_table_id, team1_id, team2_id) {
 SubmitTrades.prototype.init = function() {
     $('#' + this._team1_id).chosen();
     $('#' + this._team2_id).chosen();
-    $('#' + this._table_id).find('tbody').find('select').chosen({display_disabled_options: false});
+    var table = $('#' + this._table_id);
+    table.find('tbody').find('select').chosen({display_disabled_options: false});
     this._teamSelection();
+    // chosen doesn't work so well for some reason with hidden tables
+    table.find('.chosen-container.chosen-container-single').attr('style', 'width: 220px;');
 };
 
 
