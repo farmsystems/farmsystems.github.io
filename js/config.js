@@ -95,7 +95,7 @@ Config.prototype.showSuccess = function(header, message) {
 
 /**
  * Load all prospects into the config prospects data for lookup
- * @param callback
+ * @param callback  Object with a function called 'load' that is called after ajax response
  */
 Config.prototype.loadAllProspects = function(callback) {
     var that = this;
@@ -117,7 +117,7 @@ Config.prototype.loadAllProspects = function(callback) {
                 'team': player.team
             }
         });
-        if (callback) {
+        if (callback && callback.load) {
             callback.load();
         }
     }).fail(function(){

@@ -75,10 +75,8 @@ PendingTrades.prototype._addRow = function(teams, team1_offering, team2_offering
     row.append(occurred).append(team1_name);
     var bs1 = $('<td></td>').append(team1_players);
     var bs2 = $('<td></td>').append(team2_players);
-    row.append(bs1);
+    row.append(bs1).append(team2_name).append(bs2);
 
-    row.append(team2_name);
-    row.append(bs2);
     this.table.append(row);
 };
 

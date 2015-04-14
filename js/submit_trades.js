@@ -9,11 +9,11 @@ var SubmitTrades = function(submit_table_id, team1_id, team2_id) {
         num_propsect_spots: 6,
         tradeSentMsg_success: 'The trade proposal was successfully submitted (You can view it in <i>Pending Trades</i>)'
     };
-    this.init();
+    this._init();
 };
 
 
-SubmitTrades.prototype.init = function() {
+SubmitTrades.prototype._init = function() {
     $('#' + this._team1_id).chosen();
     $('#' + this._team2_id).chosen();
     var table = $('#' + this._table_id);
@@ -39,9 +39,7 @@ SubmitTrades.prototype.sortJsonPlayers = function(a, b) {
 
 
 SubmitTrades.prototype.getTeamProspects = function(team, column) {
-    var query = encodeURIComponent(JSON.stringify({
-        "team" : team
-    }));
+    var query = encodeURIComponent(JSON.stringify({"team" : team}));
     var that = this;
     var table_id = this._table_id;
     $.ajax({
@@ -63,8 +61,7 @@ SubmitTrades.prototype.getTeamProspects = function(team, column) {
         prospect_selects.empty();
         prospect_selects.append('<option></option>');
 
-        $('#team' + column + '-p1').append($('<option></option>')
-            .attr('value', 'No Prospects').html("[No Prospects]"));
+        $('#team' + column + '-p1').append($('<option></option>').attr('value', 'No Prospects').html("[No Prospects]"));
 
         $.each(prospects, function(index, player){
             var prospect_option = $('<option></option>');
@@ -127,7 +124,6 @@ SubmitTrades.prototype.updatePlayerSelects = function(column, exclude_select) {
 
     var all_but_current = prospect_selects
         .find('select[id!="' + exclude_select + '"]');
-
 
     $.each(disable_players, function(index, player_id){
         if (player_id !== 'No Prospects') {

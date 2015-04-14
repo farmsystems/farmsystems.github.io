@@ -52,7 +52,7 @@ var Farmsystem = function(table_id) {
         format: function(date) {
             var dob = new Date(date.split('-'));
             var ageDifMs = Date.now() - dob.getTime();
-            var ageDate = new Date(ageDifMs); // miliseconds from epoch
+            var ageDate = new Date(ageDifMs); // milliseconds from epoch
             return Math.abs(ageDate.getUTCFullYear() - 1970);
         },
         classes: function(data) {
@@ -189,7 +189,7 @@ Farmsystem.prototype.posNum = function(pos) {
 Farmsystem.prototype.selectElements = function() {
     config.elements.content = $('#content');
     this.elements.table = $('#' + this._table_id);
-    config.elements.table_body = $('#table tbody');
+    config.elements.table_body = $('#table').find('tbody');
     config.elements.prospects_btn = $('#prospects');
     config.elements.bryan_btn = $('#bryan');
     config.elements.cary_btn = $('#cary');
@@ -231,7 +231,7 @@ Farmsystem.prototype.start = function() {
     config.elements.submit_trade_sec.addClass('hidden');
     var team = config.getUrlParameter('team');
     if (team === ''){
-        this.showAllData();
+        this.showAllProspects();
     } else {
         team = team.toLowerCase();
         switch(team) {
@@ -263,7 +263,7 @@ Farmsystem.prototype.start = function() {
                 config.elements.submit_trades_btn.trigger('click');
                 break;
             default:
-                this.showAllData();
+                this.showAllProspects();
         }
     }
 };
@@ -283,9 +283,7 @@ Farmsystem.prototype.clearTable = function() {
 
 
 Farmsystem.prototype.showTeamData = function(team) {
-    var query = encodeURIComponent(JSON.stringify({
-        "team" : team
-    }));
+    var query = encodeURIComponent(JSON.stringify({"team" : team}));
     var that = this;
     $.ajax({
         url: config.config.mongolabURL + config.config.team_prospectsURL + '?q=' + query + '&apiKey=' + config.config.mongolabApiKey,
@@ -318,7 +316,7 @@ Farmsystem.prototype.showTeamData = function(team) {
 };
 
 
-Farmsystem.prototype.showAllData = function() {
+Farmsystem.prototype.showAllProspects = function() {
     var that = this;
     $.ajax({
         url: config.config.mongolabURL + config.config.team_prospectsURL + '?apiKey=' + config.config.mongolabApiKey,
@@ -367,8 +365,7 @@ Farmsystem.prototype._addHeaders = function(){
     var headers = $('<thead></thead>');
     var tr = $('<tr></tr>');
     $.each(this.columns, function(index, column) {
-        var header = column.name;
-        var td = $('<td></td>').html(header);
+        var td = $('<td></td>').html(column.name);
         tr.append(td);
     });
     headers.append(tr);
@@ -449,7 +446,7 @@ Farmsystem.prototype.attachBtnActions = function() {
         e.preventDefault();
         that.showProspectsTable();
         config.elements.prospects_btn.addClass('active');
-        that.showAllData();
+        that.showAllProspects();
         config.elements.page_link.attr('href', '');
     });
 
