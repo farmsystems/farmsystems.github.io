@@ -22,15 +22,6 @@ main {
     position: fixed;
 }
 
-/*  I don't know why, but I need this
-    so the buttons don't have the underline
-    for like a split second when clicked
- */
-#menu a {
-    color: #fff;
-    text-decoration: none;
-}
-
 /* * * * * *
  *  Content
  * * * * * */

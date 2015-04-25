@@ -43,7 +43,7 @@ SubmitTrades.prototype.getTeamProspects = function(team, column) {
     var that = this;
     var table_id = this._table_id;
     $.ajax({
-        url: config.config.mongolabURL + config.config.team_prospectsURL + '?q=' + query + '&apiKey=' + config.config.mongolabApiKey,
+        url: config.config.mongolabURL + config.config.team_prospectsURL + '?q=' + query + '&apiKey=' + config.key(),
         dataType: 'json',
         type: 'GET'
     }).done(function(data){
@@ -206,7 +206,7 @@ SubmitTrades.prototype._teamSelection = function() {
 SubmitTrades.prototype.sendTradeProposal = function(trade_proposal_json) {
     var that = this;
     return $.ajax({
-        url: config.config.mongolabURL + config.config.pending_tradesURL + '?apiKey=' + config.config.mongolabApiKey,
+        url: config.config.mongolabURL + config.config.pending_tradesURL + '?apiKey=' + config.key(),
         data: trade_proposal_json,
         contentType: 'application/json',
         type: 'POST'
@@ -249,4 +249,27 @@ SubmitTrades.prototype.getTradeProposalAsJson = function() {
         },
         'timestamp': config.getPCT().toLocaleString()
     }
+};
+
+
+SubmitTrades.prototype.attachButtonActions = function() {
+    var that = this;
+
+    // Button in the submit trades section
+    config.elements.submit_trade_btn.on('click', function(e) {
+        e.preventDefault();
+        config.showSavingBtn(config.elements.submit_trade_btn, 'Submitting...');
+        var trade_proposal_json = that.getTradeProposalAsJson();
+        if (trade_proposal_json) {
+            that.sendTradeProposal(JSON.stringify(trade_proposal_json));
+        } else {
+            config.showError('Invalid Trade Proposal', 'If one team is trading no prospects, select \'[No Prospects]\'');
+        }
+        config.restoreSavingBtn(config.elements.submit_trade_btn);
+    });
+
+    config.elements.cancel_trade_btn.on('click', function(e) {
+        e.preventDefault();
+        that.clearTable();
+    });
 };

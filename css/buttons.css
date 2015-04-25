@@ -2,12 +2,17 @@
  *  Buttons
  * * * * * */
 
-.last-button {
-    margin-bottom: 30px;
+/*  I don't know why, but I need this
+    so the buttons don't have the underline
+    for like a split second when clicked
+ */
+#menu a {
+    color: #fff;
+    text-decoration: none;
 }
 
 .button {
-    background-color: #00483A;
+    background-color: #0e8010;
     color: #fff;
     margin-top: 30px;
     margin-left: auto;
@@ -17,7 +22,7 @@
     cursor: pointer;
     padding-top: 10px;
     padding-bottom: 10px;
-    border: 1px solid #00483A;
+    border: 1px solid #0e8010;
     border-radius: 2px;
     display: block;
     text-decoration: none;
@@ -27,16 +32,25 @@
 }
 
 .button:hover {
-    background-color: #006957;
+    background-color: #129a14;
     color: #fff;
     text-decoration: none;
 }
 
 .button:active {
     background-color: #fff;
-    color: #006957;
-    border-color: #006957;
+    color: #129a14;
+    border-color: #0e8010;
     text-decoration: none;
+}
+
+#menu a.button:active {
+    color: #129a14;
+    text-decoration: none;
+}
+
+.last-button {
+    margin-bottom: 30px;
 }
 
 .menu-button {
@@ -56,36 +70,42 @@
 }
 
 .non-team {
-    background-color: #14C239;
+    background-color: #27c2be;
 }
 
 .non-team:hover {
-    background-color: #18d545;
+    background-color: #2bd6d2;
 }
 
 .non-team:active {
     background-color: #fff;
-    color: #18d545;
-    border-color: #18d545;
+    color: #2bd6d2;
+    border-color: #27c2be;
+}
+
+#menu a.non-team:active {
+    color: #2bd6d2;
+    text-decoration: none;
 }
 
 .active {
-    background-color: #FFBE00;
-    cursor: default;
-    text-decoration: none;
-    pointer-events: none;
-}
+     background-color: #FFBE00;
+     color: #fff;
+     cursor: default;
+     text-decoration: none;
+     pointer-events: none;
+ }
 
 .active:hover {
     background-color: #FFBE00;
     box-shadow: 0 3px 17px 0 rgba(0, 0, 0, 0.2);
+    color: #fff;
     transition: none;
     transform: none;
 }
 
 .active:active {
     background-color: #FFBE00;
-    color: #fff;
     border: 1px solid #00483A;
 }
 
@@ -118,6 +138,12 @@
     border-color: #ff6054;
 }
 
+.saving {
+    background-color: rgba(22, 132, 210, 0.53);
+    border-color: #1564a3;
+    cursor: wait;
+}
+
 .saving:hover {
     background-color: rgba(22, 132, 210, 0.53);
     border-color: #1564a3;
@@ -125,10 +151,4 @@
 
 .saving:active {
     color: #fff;
-}
-
-.saving {
-    background-color: rgba(22, 132, 210, 0.53);
-    border-color: #1564a3;
-    cursor: wait;
 }

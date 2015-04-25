@@ -9,8 +9,7 @@ var Farmsystem = function(table_id) {
         mlb_rank_column: 5,
         fangraphs_column: 6,
         team_column: 7,
-        columnDefs: [],
-        errorMsg: 'An error occurred while attempting to receive the team\'s players (Network connection error?)'
+        columnDefs: []
     };
 
     this._table_id = table_id ? table_id : 'prospects_table';
@@ -159,54 +158,25 @@ Farmsystem.prototype.applyCustomSorting = function() {
 
 Farmsystem.prototype.posNum = function(pos) {
     switch (pos) {
-        case 'RHP':
-            return 0;
-        case 'LHP':
-            return 1;
-        case 'C':
-            return 2;
-        case '1B':
-            return 3;
-        case '2B':
-            return 4;
-        case '3B':
-            return 5;
-        case 'SS':
-            return 6;
+        case 'RHP': return 0;
+        case 'LHP': return 1;
+        case 'C':   return 2;
+        case '1B':  return 3;
+        case '2B':  return 4;
+        case '3B':  return 5;
+        case 'SS':  return 6;
         case 'OF':
-        case 'LF':
-            return 7;
-        case 'CF':
-            return 8;
-        case 'RF':
-            return 9;
-        default:
-            return 10;
+        case 'LF':  return 7;
+        case 'CF':  return 8;
+        case 'RF':  return 9;
+        default:    return 10;
     }
 };
 
 
 Farmsystem.prototype.selectElements = function() {
-    config.elements.content = $('#content');
     this.elements.table = $('#' + this._table_id);
-    config.elements.table_body = $('#table').find('tbody');
-    config.elements.prospects_btn = $('#prospects');
-    config.elements.bryan_btn = $('#bryan');
-    config.elements.cary_btn = $('#cary');
-    config.elements.larry_btn = $('#larry');
-    config.elements.mike_btn = $('#mike');
-    config.elements.mitchel_btn = $('#mitchel');
-    config.elements.tad_btn = $('#tad');
-    config.elements.completed_trades_btn = $('#completed_trades');
-    config.elements.pending_trades_btn = $('#pending_trades');
-    config.elements.submit_trades_btn = $('#submit_trade');
-    config.elements.submit_trade_btn = $('#submit_trade_btn');
-    config.elements.cancel_trade_btn = $('#cancel_trade_btn');
-    config.elements.message = $('#message');
-    config.elements.page_link = $('#page_link');
-    config.elements.submit_trade_sec = $('#submit_trade_sec');
-    config.elements.pending_trades_table = $('#pending_trades_table');
-    config.elements.completed_trades_table = $('#completed_trades_table');
+    config.selectElements();
 };
 
 
@@ -218,6 +188,9 @@ Farmsystem.prototype.init = function() {
     });
     this.applyCustomSorting();
     this.selectElements();
+    this.submit_trades = new SubmitTrades('submit_trade_form', 'team1', 'team2');
+    this.pending_trades = new PendingTrades('pending_trades_table');
+    this.completed_trades = new CompletedTrades('completed_trades_table');
     this.attachBtnActions();
 };
 
@@ -225,9 +198,6 @@ Farmsystem.prototype.init = function() {
 Farmsystem.prototype.start = function() {
     config.loadAllProspects();
     this.init();
-    this.submit_trades = new SubmitTrades('submit_trade_form', 'team1', 'team2');
-    this.pending_trades = new PendingTrades('pending_trades_table');
-    this.completed_trades = new CompletedTrades('completed_trades_table');
     config.elements.submit_trade_sec.addClass('hidden');
     var team = config.getUrlParameter('team');
     if (team === ''){
@@ -286,7 +256,7 @@ Farmsystem.prototype.showTeamData = function(team) {
     var query = encodeURIComponent(JSON.stringify({"team" : team}));
     var that = this;
     $.ajax({
-        url: config.config.mongolabURL + config.config.team_prospectsURL + '?q=' + query + '&apiKey=' + config.config.mongolabApiKey,
+        url: config.config.mongolabURL + config.config.team_prospectsURL + '?q=' + query + '&apiKey=' + config.key(),
         dataType: 'json',
         type: 'GET'
     }).done(function(data){
@@ -311,7 +281,7 @@ Farmsystem.prototype.showTeamData = function(team) {
         });
     }).fail(function() {
         that.clearTable();
-        config.showError('Error', that.config.errorMsg);
+        config.showError('Error', config.error_msgs.receiving_players);
     });
 };
 
@@ -319,7 +289,7 @@ Farmsystem.prototype.showTeamData = function(team) {
 Farmsystem.prototype.showAllProspects = function() {
     var that = this;
     $.ajax({
-        url: config.config.mongolabURL + config.config.team_prospectsURL + '?apiKey=' + config.config.mongolabApiKey,
+        url: config.config.mongolabURL + config.config.team_prospectsURL + '?apiKey=' + config.key(),
         dataType: 'json',
         type: 'GET'
     }).done(function(data){
@@ -341,7 +311,7 @@ Farmsystem.prototype.showAllProspects = function() {
         });
     }).fail(function() {
         that.clearTable();
-        config.showError('Error', that.config.errorMsg);
+        config.showError('Error', config.error_msgs.receiving_players);
     });
 };
 
@@ -522,20 +492,5 @@ Farmsystem.prototype.attachBtnActions = function() {
         config.elements.page_link.attr('href', '?team=submit');
     });
 
-    // Button in the submit trades section
-    config.elements.submit_trade_btn.on('click', function(e) {
-        e.preventDefault();
-        config.showSavingBtn(config.elements.submit_trade_btn, 'Submitting...');
-        var trade_proposal_json = that.submit_trades.getTradeProposalAsJson();
-        if (trade_proposal_json) {
-            that.submit_trades.sendTradeProposal(JSON.stringify(trade_proposal_json));
-        } else {
-            config.showError('Invalid Trade Proposal', 'If one team is trading no prospects, select \'[No Prospects]\'');
-        }
-    });
-
-    config.elements.cancel_trade_btn.on('click', function(e) {
-        e.preventDefault();
-        that.submit_trades.clearTable();
-    });
+    this.submit_trades.attachButtonActions();
 };

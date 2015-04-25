@@ -1,8 +1,15 @@
+/**
+ *
+ * @param message_id
+ * @param element_ids   dictionary of element ids
+ * @constructor
+ */
+var Config = function(message_id, element_ids) {
+    element_ids = typeof element_ids === 'undefined' ? {} : element_ids;
 
-var Config = function(message_id) {
     this.config = {
         mongolabURL: 'https://api.mongolab.com/api/1/databases/',
-        mongolabApiKey: 'HIAnTqs9nA7nOr9qJW9PvrDkgfU9Ia0R',
+        mlak: 'SElBblRxczluQTduT3I5cUpXOVB2ckRrZ2ZVOUlhMFI=',
         team_prospectsURL: 'baseball/collections/team_prospects',
         pending_tradesURL: 'baseball/collections/pending_trades',
         completed_tradesURL: 'baseball/collections/completed_trades'
@@ -35,6 +42,51 @@ var Config = function(message_id) {
     };
 
     this.message_id = message_id ? message_id : 'message';
+    this._content_id = element_ids['content'] ? element_ids['content'] : 'content';
+    this._table_body_id = element_ids['table_body'] ? element_ids['table_body'] : 'table';
+    this._prospects_btn_id = element_ids['prospects'] ? element_ids['prospects'] : 'prospects';
+    this._bryan_btn_id = element_ids['bryan_btn'] ? element_ids['bryan_btn'] : 'bryan';
+    this._cary_btn_id = element_ids['cary_btn'] ? element_ids['cary_btn'] : 'cary';
+    this._larry_btn_id = element_ids['larry_btn'] ? element_ids['larry_btn'] : 'larry';
+    this._mike_btn_id = element_ids['mike_btn'] ? element_ids['mike_btn'] : 'mike';
+    this._mitchel_btn_id = element_ids['mitchel_btn'] ? element_ids['mitchel_btn'] : 'mitchel';
+    this._tad_btn_id = element_ids['tad_btn'] ? element_ids['tad_btn'] : 'tad';
+    this._completed_trades_btn_id = element_ids['completed_trades_btn'] ? element_ids['completed_trades_btn'] : 'completed_trades';
+    this._pending_trades_btn_id = element_ids['pending_trades_btn'] ? element_ids['pending_trades_btn'] : 'pending_trades';
+    this._submit_trades_btn_id = element_ids['submit_trades_btn'] ? element_ids['submit_trades_btn'] : 'submit_trade';
+    this._submit_trade_btn_id = element_ids['submit_trade_btn'] ? element_ids['submit_trade_btn'] : 'submit_trade_btn';
+    this._cancel_trade_btn_id = element_ids['cancel_trade_btn'] ? element_ids['cancel_trade_btn'] : 'cancel_trade_btn';
+    this._page_link_id = element_ids['page_link'] ? element_ids['page_link'] : 'page_link';
+    this._submit_trade_sec_id = element_ids['submit_trade_sec'] ? element_ids['submit_trade_sec'] : 'submit_trade_sec';
+    this._pending_trades_table_id = element_ids['pending_trades_table'] ? element_ids['pending_trades_table'] : 'pending_trades_table';
+    this._completed_trades_table = element_ids['completed_trades_table'] ? element_ids['completed_trades_table'] : 'completed_trades_table';
+
+    this.error_msgs = {
+        receiving_players: 'An error occurred while attempting to receive the team\'s players (Network connection error?)'
+    }
+};
+
+
+Config.prototype.selectElements = function() {
+    this.elements.content = $('#' + this._content_id);
+    this.elements.table_body = $('#' + this._table_body_id).find('tbody');
+    this.elements.prospects_btn = $('#' + this._prospects_btn_id);
+    this.elements.bryan_btn = $('#' + this._bryan_btn_id);
+    this.elements.cary_btn = $('#' + this._cary_btn_id);
+    this.elements.larry_btn = $('#' + this._larry_btn_id);
+    this.elements.mike_btn = $('#' + this._mike_btn_id);
+    this.elements.mitchel_btn = $('#' + this._mitchel_btn_id);
+    this.elements.tad_btn = $('#' + this._tad_btn_id);
+    this.elements.completed_trades_btn = $('#' + this._completed_trades_btn_id);
+    this.elements.pending_trades_btn = $('#' + this._pending_trades_btn_id);
+    this.elements.submit_trades_btn = $('#' + this._submit_trades_btn_id);
+    this.elements.submit_trade_btn = $('#' + this._submit_trade_btn_id);
+    this.elements.cancel_trade_btn = $('#' + this._cancel_trade_btn_id);
+    this.elements.message = $('#' + this.message_id);
+    this.elements.page_link = $('#' + this._page_link_id);
+    this.elements.submit_trade_sec = $('#' + this._submit_trade_sec_id);
+    this.elements.pending_trades_table = $('#' + this._pending_trades_table_id);
+    this.elements.completed_trades_table = $('#' + this._completed_trades_table);
 };
 
 /**
@@ -100,7 +152,7 @@ Config.prototype.showSuccess = function(header, message) {
 Config.prototype.loadAllProspects = function(callback) {
     var that = this;
     $.ajax({
-        url: this.config.mongolabURL + this.config.team_prospectsURL + '?apiKey=' + this.config.mongolabApiKey,
+        url: this.config.mongolabURL + this.config.team_prospectsURL + '?apiKey=' + this.key(),
         dataType: 'json',
         type: 'GET'
     }).done(function(players){
@@ -158,6 +210,11 @@ Config.prototype.getPCT = function() {
     // create new Date object for different city
     // using supplied offset
     return new Date(utc + (3600000*offset))
+};
+
+
+Config.prototype.key = function() {
+    return atob(this.config.mlak);
 };
 
 

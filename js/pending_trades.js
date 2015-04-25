@@ -103,7 +103,7 @@ PendingTrades.prototype.load = function() {
     this._selectElements();
     var that = this;
     $.ajax({
-        url: config.config.mongolabURL + config.config.pending_tradesURL + '?apiKey=' + config.config.mongolabApiKey,
+        url: config.config.mongolabURL + config.config.pending_tradesURL + '?apiKey=' + config.key(),
         dataType: 'json',
         type: 'GET'
     }).done(function(pending_trades){
