@@ -6,7 +6,7 @@ input {
     outline: 0;
     background: transparent !important;
     box-shadow: none;
-    color: #999;
+    color: #fff;
     font-size: 100%;
     font-family: sans-serif;
     line-height: normal;
@@ -35,13 +35,15 @@ select {
     width: 100%;
 }
 
+#submit_trade_sec {
+    color: #fff;
+}
+
 #submit_trade_form thead tr td p{
     text-align: center;
     padding-top: 5px;
 }
 
 #submit_trade_form {
-    /*background-color: #ddd;*/
-    /*padding: 10px;*/
-    /*border-radius: 5px;*/
+    color: #fff;
 }

@@ -16,4 +16,5 @@ In Progress Features / Fixes
 Future Features / Fixes
 -----------------------
 * [FEATURE] Add Prospect Rules page
+* [FEATURE] Add Fangraph / MLB links to prospect names
 

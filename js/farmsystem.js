@@ -9,7 +9,8 @@ var Farmsystem = function(table_id) {
         mlb_rank_column: 5,
         fangraphs_column: 6,
         team_column: 7,
-        columnDefs: []
+        columnDefs: [],
+        teams: ['bryan', 'cary', 'larry', 'mike', 'mitchel', 'tad']
     };
 
     this._table_id = table_id ? table_id : 'prospects_table';
@@ -186,6 +187,7 @@ Farmsystem.prototype.init = function() {
     $.each(this.columns, function(index, column) {
         that.config.columnDefs.push(column.columnDef)
     });
+    config.setElementIds({}, {}, this.config.teams);
     this.applyCustomSorting();
     this.selectElements();
     this.submit_trades = new SubmitTrades('submit_trade_form', 'team1', 'team2');
@@ -205,24 +207,6 @@ Farmsystem.prototype.start = function() {
     } else {
         team = team.toLowerCase();
         switch(team) {
-            case 'bryan':
-                config.elements.bryan_btn.trigger('click');
-                break;
-            case 'cary':
-                config.elements.cary_btn.trigger('click');
-                break;
-            case 'larry':
-                config.elements.larry_btn.trigger('click');
-                break;
-            case 'mike':
-                config.elements.mike_btn.trigger('click');
-                break;
-            case 'mitchel':
-                config.elements.mitchel_btn.trigger('click');
-                break;
-            case 'tad':
-                config.elements.tad_btn.trigger('click');
-                break;
             case 'completed':
                 config.elements.completed_trades_btn.trigger('click');
                 break;
@@ -233,7 +217,11 @@ Farmsystem.prototype.start = function() {
                 config.elements.submit_trades_btn.trigger('click');
                 break;
             default:
-                this.showAllProspects();
+                if (team in config.elements.team_menu_btns) {
+                    config.elements.team_menu_btns[team].trigger('click');
+                } else {
+                    this.showAllProspects();
+                }
         }
     }
 };
@@ -407,6 +395,26 @@ Farmsystem.prototype.showSubmitTrades = function() {
 };
 
 
+Farmsystem.prototype.attachTeamMenuBtnActions = function() {
+    var teams = Object.keys(config.elements.team_menu_btns);
+    for (var i = 0; i < teams.length; ++i) {
+        this._attachTeamMenuBtnToAction(teams[i]);
+    }
+};
+
+
+Farmsystem.prototype._attachTeamMenuBtnToAction = function(team) {
+    var that = this;
+    config.elements.team_menu_btns[team].on('click', function(e) {
+        e.preventDefault();
+        that.showProspectsTable();
+        config.elements.team_menu_btns[team].addClass('active');
+        that.showTeamData(team);
+        config.elements.page_link.attr('href', '?team=' + team);
+    });
+};
+
+
 /*
  *  Interaction
  */
@@ -420,53 +428,7 @@ Farmsystem.prototype.attachBtnActions = function() {
         config.elements.page_link.attr('href', '');
     });
 
-    config.elements.bryan_btn.on('click', function(e) {
-        e.preventDefault();
-        that.showProspectsTable();
-        config.elements.bryan_btn.addClass('active');
-        that.showTeamData('bryan');
-        config.elements.page_link.attr('href', '?team=bryan');
-    });
-
-    config.elements.cary_btn.on('click', function(e) {
-        e.preventDefault();
-        that.showProspectsTable();
-        config.elements.cary_btn.addClass('active');
-        that.showTeamData('cary');
-        config.elements.page_link.attr('href', '?team=cary');
-    });
-
-    config.elements.larry_btn.on('click', function(e) {
-        e.preventDefault();
-        that.showProspectsTable();
-        config.elements.larry_btn.addClass('active');
-        that.showTeamData('larry');
-        config.elements.page_link.attr('href', '?team=larry');
-    });
-
-    config.elements.mike_btn.on('click', function(e) {
-        e.preventDefault();
-        that.showProspectsTable();
-        config.elements.mike_btn.addClass('active');
-        that.showTeamData('mike');
-        config.elements.page_link.attr('href', '?team=mike');
-    });
-
-    config.elements.mitchel_btn.on('click', function(e) {
-        e.preventDefault();
-        that.showProspectsTable();
-        config.elements.mitchel_btn.addClass('active');
-        that.showTeamData('mitchel');
-        config.elements.page_link.attr('href', '?team=mitchel');
-    });
-
-    config.elements.tad_btn.on('click', function(e) {
-        e.preventDefault();
-        that.showProspectsTable();
-        config.elements.tad_btn.addClass('active');
-        that.showTeamData('tad');
-        config.elements.page_link.attr('href', '?team=tad');
-    });
+    this.attachTeamMenuBtnActions();
 
     config.elements.completed_trades_btn.on('click', function(e) {
         e.preventDefault();

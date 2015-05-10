@@ -71,6 +71,7 @@
 
 .non-team {
     background-color: #27c2be;
+    border-color: #27c2be;
 }
 
 .non-team:hover {

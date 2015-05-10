@@ -15,7 +15,7 @@ main {
     width: 12%;
     height: 100%;
     box-sizing:border-box;
-    background-color: #f2f2f2;
+    background-color: #424242;
     font-size: 12px;
     float: left;
     overflow-y: auto;
@@ -45,6 +45,7 @@ main {
     padding-left: 10px;
     padding-right: 10px;
     float: right;
+    background-color: #000;
 }
 
 /* * * * * *
@@ -55,6 +56,7 @@ main {
     border-bottom: 0;
     top: 16px;
     position: relative;
+    color: #fff;
 }
 
 #prospects_table thead td {
@@ -71,7 +73,11 @@ main {
 table.dataTable .even {
     box-sizing:border-box;
     border: 1px solid #000;
-    background-color: #fafafa;
+    background-color: #6B6B6B;
+}
+
+table.dataTable .odd {
+    background-color: #505050;
 }
 
 #prospects_table thead tr td {
@@ -79,23 +85,23 @@ table.dataTable .even {
 }
 
 .grade_a {
-    color: #001FD3
+    color: #3C80FD;
 }
 
 .grade_b {
-    color: #007E0A
+    color: #00FF14;
 }
 
 .grade_c {
-    color: #CDCA00
+    color: #fffb00;
 }
 
 .grade_d {
-    color: #9F5D00
+    color: #ff9500;
 }
 
 .grade_low {
-    color: #9F0600
+    color: #ff0900;
 }
 
 input {

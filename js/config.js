@@ -2,9 +2,10 @@
  *
  * @param message_id
  * @param element_ids   dictionary of element ids
+ * @param team_ids      array of team ids
  * @constructor
  */
-var Config = function(message_id, element_ids) {
+var Config = function(message_id, element_ids, team_ids) {
     element_ids = typeof element_ids === 'undefined' ? {} : element_ids;
 
     this.config = {
@@ -19,6 +20,7 @@ var Config = function(message_id, element_ids) {
         content: null,
         table_body: null,
         prospects_btn: null,
+        team_menu_btns: {},
         bryan_btn: null,
         cary_btn: null,
         larry_btn: null,
@@ -41,16 +43,20 @@ var Config = function(message_id, element_ids) {
         prospects: {}
     };
 
-    this.message_id = message_id ? message_id : 'message';
+    this._teams_elements = {};
+    if (team_ids && team_ids.length > 0) {
+        for (var i = 0; i < team_ids.length; ++i) {
+            if (!(team_ids[i] in this._teams_elements)) {
+                this._teams_elements[team_ids[i]] = {};
+            }
+            this._teams_elements[team_ids[i]]['menu_btn'] = team_ids[i] + '_menu_btn';
+        }
+    }
+
+    this.message_id = message_id && Object.keys(message_id).length > 0 ? message_id : 'message';
     this._content_id = element_ids['content'] ? element_ids['content'] : 'content';
     this._table_body_id = element_ids['table_body'] ? element_ids['table_body'] : 'table';
     this._prospects_btn_id = element_ids['prospects'] ? element_ids['prospects'] : 'prospects';
-    this._bryan_btn_id = element_ids['bryan_btn'] ? element_ids['bryan_btn'] : 'bryan';
-    this._cary_btn_id = element_ids['cary_btn'] ? element_ids['cary_btn'] : 'cary';
-    this._larry_btn_id = element_ids['larry_btn'] ? element_ids['larry_btn'] : 'larry';
-    this._mike_btn_id = element_ids['mike_btn'] ? element_ids['mike_btn'] : 'mike';
-    this._mitchel_btn_id = element_ids['mitchel_btn'] ? element_ids['mitchel_btn'] : 'mitchel';
-    this._tad_btn_id = element_ids['tad_btn'] ? element_ids['tad_btn'] : 'tad';
     this._completed_trades_btn_id = element_ids['completed_trades_btn'] ? element_ids['completed_trades_btn'] : 'completed_trades';
     this._pending_trades_btn_id = element_ids['pending_trades_btn'] ? element_ids['pending_trades_btn'] : 'pending_trades';
     this._submit_trades_btn_id = element_ids['submit_trades_btn'] ? element_ids['submit_trades_btn'] : 'submit_trade';
@@ -66,11 +72,43 @@ var Config = function(message_id, element_ids) {
     }
 };
 
+Config.prototype.setElementIds = function(message_id, element_ids, team_ids) {
+
+    if (team_ids && team_ids.length > 0) {
+        for (var i = 0; i < team_ids.length; ++i) {
+            if (!(team_ids[i] in this._teams_elements)) {
+                this._teams_elements[team_ids[i]] = {}
+            }
+            this._teams_elements[team_ids[i]]['menu_btn'] = team_ids[i] + '_menu_btn';
+        }
+    }
+
+    this.message_id = message_id && Object.keys(message_id).length > 0 ? message_id : 'message';
+    this._content_id = element_ids['content'] ? element_ids['content'] : 'content';
+    this._table_body_id = element_ids['table_body'] ? element_ids['table_body'] : 'table';
+    this._prospects_btn_id = element_ids['prospects'] ? element_ids['prospects'] : 'prospects';
+    this._completed_trades_btn_id = element_ids['completed_trades_btn'] ? element_ids['completed_trades_btn'] : 'completed_trades';
+    this._pending_trades_btn_id = element_ids['pending_trades_btn'] ? element_ids['pending_trades_btn'] : 'pending_trades';
+    this._submit_trades_btn_id = element_ids['submit_trades_btn'] ? element_ids['submit_trades_btn'] : 'submit_trade';
+    this._submit_trade_btn_id = element_ids['submit_trade_btn'] ? element_ids['submit_trade_btn'] : 'submit_trade_btn';
+    this._cancel_trade_btn_id = element_ids['cancel_trade_btn'] ? element_ids['cancel_trade_btn'] : 'cancel_trade_btn';
+    this._page_link_id = element_ids['page_link'] ? element_ids['page_link'] : 'page_link';
+    this._submit_trade_sec_id = element_ids['submit_trade_sec'] ? element_ids['submit_trade_sec'] : 'submit_trade_sec';
+    this._pending_trades_table_id = element_ids['pending_trades_table'] ? element_ids['pending_trades_table'] : 'pending_trades_table';
+    this._completed_trades_table = element_ids['completed_trades_table'] ? element_ids['completed_trades_table'] : 'completed_trades_table';
+};
+
 
 Config.prototype.selectElements = function() {
     this.elements.content = $('#' + this._content_id);
     this.elements.table_body = $('#' + this._table_body_id).find('tbody');
     this.elements.prospects_btn = $('#' + this._prospects_btn_id);
+
+    var teams = Object.keys(this._teams_elements);
+    for (var i = 0; i < teams.length; ++i) {
+        this.elements.team_menu_btns[teams[i]] = $('#' + this._teams_elements[teams[i]]['menu_btn']);
+    }
+
     this.elements.bryan_btn = $('#' + this._bryan_btn_id);
     this.elements.cary_btn = $('#' + this._cary_btn_id);
     this.elements.larry_btn = $('#' + this._larry_btn_id);

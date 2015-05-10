@@ -1,6 +1,7 @@
 
 #pending_trades_table {
     border-bottom: 0;
+    color: #fff;
 }
 
 #pending_trades_table thead tr td {
