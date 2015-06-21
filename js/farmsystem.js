@@ -9,6 +9,7 @@ var Farmsystem = function(table_id, team_ids) {
         mlb_rank_column: 5,
         fangraphs_column: 6,
         team_column: 7,
+        actions_column: 8,
         columnDefs: [],
         teams: typeof team_ids === 'undefined' ? [] : team_ids
     };
@@ -55,7 +56,7 @@ var Farmsystem = function(table_id, team_ids) {
     },{
         name: 'Age',
         key: 'dob',
-        columnDef: { "width": '12.5%', "targets": this.config.age_column },
+        columnDef: { "width": '8%', "targets": this.config.age_column },
         format: function(player_data) {
             var date = player_data['dob'];
             var dob = new Date(date.split('-'));
@@ -122,6 +123,16 @@ var Farmsystem = function(table_id, team_ids) {
         format: function(player_data) {
             var team = player_data['team'];
             return team.toUpperCase();
+        }
+    },{
+        name: 'Actions',
+        key: 'actions',
+        columnDef: { "width": '12.5%', "targets": this.config.actions_column },
+        no_data: function(player_data) {
+            var id = player_data['_id']['$oid'] + "_update_btn";
+            var classes = "action_btn update_btn";
+            var href = "updateprospect.html?playerid=" + player_data['_id']['$oid'];
+            return "<a id=\"" + id + "\" class=\"" + classes + "\" href=\"" + href + "\">Update</a>";
         }
     }];
 };
@@ -318,7 +329,7 @@ Farmsystem.prototype.buildTable = function(data) {
     var that = this;
     $.each(data, function(index, player) {
         that._addRow(player);
-    })
+    });
 };
 
 
@@ -355,7 +366,7 @@ Farmsystem.prototype._addRow = function(row_data){
                 cell_text = row_data[column.key];
             }
         } else if (column.no_data) {
-            cell_text = column.no_data();
+            cell_text = column.no_data(row_data);
         }
         cell.html(cell_text);
         row.append(cell);

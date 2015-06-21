@@ -1,0 +1,11 @@
+#update_prospect_table td {
+    padding-bottom: 10px;
+}
+
+#update_prospect_table tr td:first-child {
+    padding-right: 30px;
+}
+
+#update_prospect_table tr:last-child td:first-child {
+    padding-left: 30px;
+}

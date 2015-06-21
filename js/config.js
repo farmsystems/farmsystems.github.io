@@ -130,6 +130,7 @@ Config.prototype.selectElements = function() {
  * @param message
  */
 Config.prototype.showError = function(header, message) {
+    this.selectElements();
     $('#' + this.message_id).remove();
     var error_msg = $('<div></div>').attr('id', 'message')
         .attr('class', 'alert alert-danger alert-dismissible fade in')
@@ -158,6 +159,7 @@ Config.prototype.showError = function(header, message) {
  * @param message
  */
 Config.prototype.showSuccess = function(header, message) {
+    this.selectElements();
     $('#' + this.message_id).remove();
     var error_msg = $('<div></div>').attr('id', 'message')
         .attr('class', 'alert alert-success fade in')
@@ -204,6 +206,31 @@ Config.prototype.loadAllProspects = function(callback) {
         }
     }).fail(function(){
         console.error("fail - prospects");
+    });
+};
+
+/**
+ * Get player data from db using player_id
+ * @param player_id
+ * @param callback callback function to call after ajax is complete
+ */
+Config.prototype.getProspect = function(player_id, callback) {
+    var query = encodeURIComponent(JSON.stringify({
+        "_id": {
+            "$oid": player_id
+        }
+    }));
+    $.ajax({
+        url: config.config.mongolabURL + config.config.team_prospectsURL + '?q=' + query + '&apiKey=' + this.key(),
+        dataType: 'json',
+        type: 'GET'
+    }).done(function(player_data){
+        if (typeof callback !== 'undefined') {
+            callback(player_data[0]);
+        }
+    }).fail(function(){
+        window.location.href = "index.html";
+        console.error("fail to get player (" + player_id + ")");
     });
 };
 

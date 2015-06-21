@@ -154,3 +154,30 @@
 .saving:active {
     color: #fff;
 }
+
+.action_btn {
+    font-size: 0.9em;
+    border: 1px solid #848482;
+    cursor: pointer;
+    border-radius: 2px;
+    text-align: center;
+    text-decoration: none;
+    padding: 5px 5px 5px 5px;
+}
+
+.update_btn {
+    background-color: #116680;
+    color: #fff;
+}
+
+.update_btn:hover{
+    background: #147b9a;
+    color: white;
+    border-color: #848482;
+    text-decoration: none;
+}
+.update_btn:active {
+    background: #116680;
+    border-color: #848482;
+    text-decoration: none;
+}

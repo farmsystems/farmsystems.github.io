@@ -13,7 +13,7 @@ Currently Features
 
 In Progress Features / Fixes
 ----------------------------
-* [FEATURE] Update prospect info through site
+* [FEATURE] Add Update and Delete button to prospects tables
 
 Future Features / Fixes
 -----------------------

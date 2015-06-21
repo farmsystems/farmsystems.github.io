@@ -1,16 +1,16 @@
 
-function clearForm() {
-    $('#player').val('');
-    $('#mlb_team').val($("#mlb_team option:first").val());
-    $('#team').val($("#team option:first").val());
-    $('#pos').val($("#pos option:first").val());
-    $('#year').val($("#year option:first").val());
-    $('#month').val($("#month option:first").val());
-    $('#day').val($("#day option:first").val());
-    $('#rank').val($("#rank option:first").val());
-    $('#fangraphs').val($("#fangraphs option:first").val());
-    $('#grade').val($("#grade option:first").val());
-    $('#fangraphs_id').val('');
+function resetForm() {
+    $('#player').val($('#player').attr('default'));
+    $('#mlb_team').val($('#mlb_team').attr('default'));
+    $('#team').val($('#team').attr('default'));
+    $('#pos').val($('#pos').attr('default'));
+    $('#year').val($('#year').attr('default'));
+    $('#month').val($('#month').attr('default'));
+    $('#day').val($('#day').attr('default'));
+    $('#rank').val($('#rank').attr('default'));
+    $('#fangraphs').val($('#fangraphs').attr('default'));
+    $('#grade').val($('#grade').attr('default'));
+    $('#fangraphs_id').val($('#fangraphs_id').attr('default'));
 }
 
 function addPlayerToDB(data) {
@@ -27,6 +27,7 @@ function addPlayerToDB(data) {
 
 function getProspectData() {
     var data = {};
+    data['_id'] = { '$oid': getPlayerId() };
     data['player'] = $('#player').val();
     data['mlb_team'] = $('#mlb_team').val();
     data['team'] = $('#team').val();
@@ -40,6 +41,41 @@ function getProspectData() {
     data['grade'] = $('#grade').val();
     data['fangraphs_id'] = $('#fangraphs_id').val();
     return data;
+}
+
+function populatePlayerData(player_data) {
+    $.each(player_data, function(key, value) {
+        if (key === 'dob') {
+            var dob = value.split('-');
+            var year = $('#year');
+            var month = $('#month');
+            var day = $('#day');
+            year.val(parseInt(dob[0]));
+            year.attr('default', parseInt(dob[0]));
+            month.val(parseInt(dob[1]));
+            month.attr('default', parseInt(dob[1]));
+            day.val(parseInt(dob[2]));
+            day.attr('default', parseInt(dob[2]));
+        } else {
+            var element = $('#' + key);
+            element.val(value);
+            element.attr('default', value);
+        }
+    })
+}
+
+function insertPlayerId(player_id) {
+    $('#player').attr('player_id', player_id);
+}
+
+function getPlayerId() {
+    return $('#player').attr('player_id');
+}
+
+function getProspectInfo() {
+    var player_id = config.getUrlParameter('playerid');
+    insertPlayerId(player_id);
+    config.getProspect(player_id, populatePlayerData);
 }
 
 function addDob(maxYear, minYear, maxMonth, maxDay) {
@@ -99,29 +135,29 @@ function addFangraphsValue(maxValue, minValue) {
     }
 }
 
-function addTeams(teams) {
-    var team_select = $('#team');
-    $.each(teams, function(index, team) {
-        var option = '<option value="' + team + '">' + team.firstLetterToUpperCase() + '</option>';
-        team_select.append(option);
-    });
-}
 
-$('#submit').on('click', function(e) {
+
+$('#update').on('click', function(e) {
     e.preventDefault();
     if ($('#player').val() !== '') {
         addPlayerToDB(getProspectData());
     }
+    window.location.href = "index.html";
+});
+
+$('#reset').on('click', function(e) {
+    e.preventDefault();
+    resetForm();
 });
 
 $('#cancel').on('click', function(e) {
     e.preventDefault();
-    clearForm();
+    window.location.href = "index.html";
 });
 
 $(document).ready(function() {
-    addTeams(['bryan', 'cary', 'larry', 'mike', 'mitchel', 'tad']);
     addDob();
     addMLBRank();
     addFangraphsValue();
+    getProspectInfo();
 });
