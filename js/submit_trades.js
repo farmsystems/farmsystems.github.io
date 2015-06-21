@@ -1,5 +1,5 @@
 
-var SubmitTrades = function(submit_table_id, team1_id, team2_id) {
+var SubmitTrades = function(submit_table_id, team1_id, team2_id, team_ids) {
     this._table_id = submit_table_id;
     this._team1_id = team1_id;
     this._team2_id = team2_id;
@@ -9,11 +9,27 @@ var SubmitTrades = function(submit_table_id, team1_id, team2_id) {
         num_propsect_spots: 6,
         tradeSentMsg_success: 'The trade proposal was successfully submitted (You can view it in <i>Pending Trades</i>)'
     };
+    this._teams = team_ids;
     this._init();
+};
+
+/**
+ * Add teams to the submit trades table
+ * @private
+ */
+SubmitTrades.prototype._addTeamSelectOptions = function() {
+    var team1 = $('#' + this._team1_id);
+    var team2 = $('#' + this._team2_id);
+    $.each(this._teams, function(index, team) {
+        var option = '<option value="' + team + '">' + team.firstLetterToUpperCase() + '</option>';
+        team1.append(option);
+        team2.append(option);
+    });
 };
 
 
 SubmitTrades.prototype._init = function() {
+    this._addTeamSelectOptions();
     $('#' + this._team1_id).chosen();
     $('#' + this._team2_id).chosen();
     var table = $('#' + this._table_id);

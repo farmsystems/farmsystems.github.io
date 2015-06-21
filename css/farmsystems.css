@@ -108,6 +108,10 @@ input {
     margin-top: 1px;
 }
 
+.player a{
+    color: #fff94f;
+}
+
 /* * * * * *
  *  Messages
  * * * * * */

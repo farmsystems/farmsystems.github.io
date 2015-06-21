@@ -52,24 +52,12 @@
                         <td>
                             <select data-placeholder="Select Team" class="chosen-select" id="team1">
                                 <option></option>
-                                <option value="bryan">Bryan</option>
-                                <option value="cary">Cary</option>
-                                <option value="larry">Larry</option>
-                                <option value="mike">Mike</option>
-                                <option value="mitchel">Mitchel</option>
-                                <option value="tad">Tad</option>
                             </select>
                             <p>Sends:</p>
                         </td>
                         <td>
                             <select data-placeholder="Select Team" class="chosen-select" id="team2" style="width:100%">
                                 <option></option>
-                                <option value="bryan">Bryan</option>
-                                <option value="cary">Cary</option>
-                                <option value="larry">Larry</option>
-                                <option value="mike">Mike</option>
-                                <option value="mitchel">Mitchel</option>
-                                <option value="tad">Tad</option>
                             </select>
                             <p>Sends:</p>
                         </td>
@@ -170,7 +158,8 @@
     </main>
     <script>
         $(document).ready(function() {
-            new Farmsystem().start();
+            var teams = ['bryan', 'cary', 'larry', 'mike', 'mitchel', 'tad'];
+            new Farmsystem('prospects_table', teams).start();
         });
     </script>
 </body>

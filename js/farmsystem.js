@@ -1,5 +1,5 @@
 
-var Farmsystem = function(table_id) {
+var Farmsystem = function(table_id, team_ids) {
     this.config = {
         position_column: 0,
         player_column: 1,
@@ -10,7 +10,7 @@ var Farmsystem = function(table_id) {
         fangraphs_column: 6,
         team_column: 7,
         columnDefs: [],
-        teams: ['bryan', 'cary', 'larry', 'mike', 'mitchel', 'tad']
+        teams: typeof team_ids === 'undefined' ? [] : team_ids
     };
 
     this._table_id = table_id ? table_id : 'prospects_table';
@@ -35,6 +35,13 @@ var Farmsystem = function(table_id) {
         name: 'Player',
         key: 'player',
         columnDef: { "width": '19%', "type": 'name', "targets": this.config.player_column },
+        format: function(player_data) {
+            if ('fangraphs_id' in player_data && player_data['fangraphs_id'] != '') {
+                var url = config.config.fangraphs_playerURL + player_data['fangraphs_id'];
+                return '<a href="' + url + '" target="_blank">' + player_data['player'] + '</a>';
+            }
+            return player_data['player'];
+        },
         classes: function(data) {
             return ['player'];
         }
@@ -49,11 +56,12 @@ var Farmsystem = function(table_id) {
         name: 'Age',
         key: 'dob',
         columnDef: { "width": '12.5%', "targets": this.config.age_column },
-        format: function(date) {
+        format: function(player_data) {
+            var date = player_data['dob'];
             var dob = new Date(date.split('-'));
             var ageDifMs = Date.now() - dob.getTime();
             var ageDate = new Date(ageDifMs); // milliseconds from epoch
-            return Math.abs(ageDate.getUTCFullYear() - 1970);
+            return '<span title="' + date + '">' + Math.abs(ageDate.getUTCFullYear() - 1970) + '</span>';
         },
         classes: function(data) {
             return ['age'];
@@ -111,7 +119,8 @@ var Farmsystem = function(table_id) {
         classes: function(data) {
             return ['team'];
         },
-        format: function(team) {
+        format: function(player_data) {
+            var team = player_data['team'];
             return team.toUpperCase();
         }
     }];
@@ -190,10 +199,10 @@ Farmsystem.prototype.init = function() {
     config.setElementIds({}, {}, this.config.teams);
     this.applyCustomSorting();
     this.selectElements();
-    this.submit_trades = new SubmitTrades('submit_trade_form', 'team1', 'team2');
+    this.submit_trades = new SubmitTrades('submit_trade_form', 'team1', 'team2', this.config.teams);
     this.pending_trades = new PendingTrades('pending_trades_table');
     this.completed_trades = new CompletedTrades('completed_trades_table');
-    this.attachBtnActions();
+    this.attachButtonActions();
 };
 
 
@@ -341,7 +350,7 @@ Farmsystem.prototype._addRow = function(row_data){
                 cell.attr('class', column.classes(row_data[column.key]).join(' '));
             }
             if (column.format) {
-                cell_text = column.format(row_data[column.key]);
+                cell_text = column.format(row_data);
             } else {
                 cell_text = row_data[column.key];
             }
@@ -418,7 +427,7 @@ Farmsystem.prototype._attachTeamMenuBtnToAction = function(team) {
 /*
  *  Interaction
  */
-Farmsystem.prototype.attachBtnActions = function() {
+Farmsystem.prototype.attachButtonActions = function() {
     var that = this;
     config.elements.prospects_btn.on('click', function(e) {
         e.preventDefault();

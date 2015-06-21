@@ -90,11 +90,12 @@
 }
 
 .active {
-     background-color: #FFBE00;
-     color: #fff;
-     cursor: default;
-     text-decoration: none;
-     pointer-events: none;
+    background-color: #FFBE00;
+    color: #fff;
+    cursor: default;
+    text-decoration: none;
+    pointer-events: none;
+    border-color: #fff;
  }
 
 .active:hover {
