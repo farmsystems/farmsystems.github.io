@@ -1,8 +1,8 @@
 /**
  *
  * @param message_id
- * @param element_ids   dictionary of element ids
- * @param team_ids      array of team ids
+ * @param element_ids       dictionary of element ids
+ * @param team_ids          array of team ids
  * @constructor
  */
 var Config = function(message_id, element_ids, team_ids) {
@@ -13,7 +13,8 @@ var Config = function(message_id, element_ids, team_ids) {
         mlak: 'SElBblRxczluQTduT3I5cUpXOVB2ckRrZ2ZVOUlhMFI=',
         team_prospectsURL: 'baseball/collections/team_prospects',
         pending_tradesURL: 'baseball/collections/pending_trades',
-        completed_tradesURL: 'baseball/collections/completed_trades'
+        completed_tradesURL: 'baseball/collections/completed_trades',
+        fangraphs_playerURL: 'http://www.fangraphs.com/statss.aspx?playerid='
     };
 
     this.elements = {
@@ -42,6 +43,8 @@ var Config = function(message_id, element_ids, team_ids) {
     this.data = {
         prospects: {}
     };
+
+    this.prospect_columns = ['dob', 'fangraphs', 'grade', 'mlb_team', 'player', 'pos', 'rank', 'team', 'fangraphs_id'];
 
     this._teams_elements = {};
     if (team_ids && team_ids.length > 0) {
@@ -109,12 +112,6 @@ Config.prototype.selectElements = function() {
         this.elements.team_menu_btns[teams[i]] = $('#' + this._teams_elements[teams[i]]['menu_btn']);
     }
 
-    this.elements.bryan_btn = $('#' + this._bryan_btn_id);
-    this.elements.cary_btn = $('#' + this._cary_btn_id);
-    this.elements.larry_btn = $('#' + this._larry_btn_id);
-    this.elements.mike_btn = $('#' + this._mike_btn_id);
-    this.elements.mitchel_btn = $('#' + this._mitchel_btn_id);
-    this.elements.tad_btn = $('#' + this._tad_btn_id);
     this.elements.completed_trades_btn = $('#' + this._completed_trades_btn_id);
     this.elements.pending_trades_btn = $('#' + this._pending_trades_btn_id);
     this.elements.submit_trades_btn = $('#' + this._submit_trades_btn_id);
@@ -196,16 +193,11 @@ Config.prototype.loadAllProspects = function(callback) {
     }).done(function(players){
         that.data.prospects = {};
         $.each(players, function(index, player){
-            that.data.prospects[player._id['$oid']] = {
-                'dob': player.dob,
-                'fangraphs': player.fangraphs,
-                'grade': player.grade,
-                'mlb_team': player.mlb_team,
-                'player': player.player,
-                'pos': player.pos,
-                'rank': player.rank,
-                'team': player.team
-            }
+            var pid = player._id['$oid'];
+            that.data.prospects[pid] = {};
+            $.each(that.prospect_columns, function(index, col) {
+                that.data.prospects[pid][col] = player[col];
+            });
         });
         if (callback && callback.load) {
             callback.load();
@@ -280,6 +272,10 @@ Config.prototype.restoreSavingBtn = function(btn_element) {
     btn_element.removeClass('saving');
     btn_element.html(btn_element.attr('text'));
     btn_element.removeAttr('text');
+};
+
+String.prototype.firstLetterToUpperCase = function() {
+    return this.charAt(0).toUpperCase() + this.slice(1);
 };
 
 var config = new Config();
