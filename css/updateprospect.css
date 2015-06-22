@@ -1,11 +1,36 @@
+#update_prospect_table {
+    color: #fff;
+}
+
 #update_prospect_table td {
     padding-bottom: 10px;
 }
 
 #update_prospect_table tr td:first-child {
     padding-right: 30px;
+    color: #fff;
 }
 
 #update_prospect_table tr:last-child td:first-child {
     padding-left: 30px;
+}
+
+.page {
+    background-color: #4A4A4A;
+}
+
+h3 {
+    font-weight: bold;
+    font-size: 2em;
+    margin: 6px 0 20px 55px;
+}
+
+#content {
+    background-color: #383838;
+    position: fixed;
+    top: 108px;
+    left: 50%;
+    margin-left: -14%;
+    padding: 35px 60px 30px 7px;
+    color: #fff;
 }

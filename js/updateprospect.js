@@ -13,7 +13,7 @@ function resetForm() {
     $('#fangraphs_id').val($('#fangraphs_id').attr('default'));
 }
 
-function addPlayerToDB(data) {
+function addPlayerToDB(data, redirect) {
     $.ajax({
         url: 'https://api.mongolab.com/api/1/databases/baseball/collections/team_prospects?apiKey=' +
             atob('SElBblRxczluQTduT3I5cUpXOVB2ckRrZ2ZVOUlhMFI='),
@@ -21,16 +21,19 @@ function addPlayerToDB(data) {
         contentType: 'application/json',
         type: 'POST'
     }).done(function(data){
-        clearForm();
+        resetForm();
+        if (typeof redirect !== 'undefined' || redirect !== '') {
+            //window.location.href = redirect;
+        }
     });
 }
 
 function getProspectData() {
     var data = {};
     data['_id'] = { '$oid': getPlayerId() };
+    data['team'] = getPlayersTeam();
     data['player'] = $('#player').val();
     data['mlb_team'] = $('#mlb_team').val();
-    data['team'] = $('#team').val();
     data['pos'] = $('#pos').val();
     var year = $('#year').val();
     var month = $('#month').val();
@@ -56,12 +59,23 @@ function populatePlayerData(player_data) {
             month.attr('default', parseInt(dob[1]));
             day.val(parseInt(dob[2]));
             day.attr('default', parseInt(dob[2]));
+        }
+        if (key === 'team') {
+            insertPlayersTeam(value);
         } else {
             var element = $('#' + key);
             element.val(value);
             element.attr('default', value);
         }
     })
+}
+
+function insertPlayersTeam(team) {
+    $('#player').attr('team', team);
+}
+
+function getPlayersTeam() {
+    return $('#player').attr('team');
 }
 
 function insertPlayerId(player_id) {
@@ -135,14 +149,17 @@ function addFangraphsValue(maxValue, minValue) {
     }
 }
 
+function getReturnLink(basePage) {
+    var returnPage = config.getUrlParameter('return');
+    return basePage + (returnPage === '' ? '' : '?team=' + returnPage);
+}
 
 
 $('#update').on('click', function(e) {
     e.preventDefault();
     if ($('#player').val() !== '') {
-        addPlayerToDB(getProspectData());
+        addPlayerToDB(getProspectData(), getReturnLink('index.html'));
     }
-    window.location.href = "index.html";
 });
 
 $('#reset').on('click', function(e) {
@@ -152,7 +169,7 @@ $('#reset').on('click', function(e) {
 
 $('#cancel').on('click', function(e) {
     e.preventDefault();
-    window.location.href = "index.html";
+    window.location.href = getReturnLink('index.html');
 });
 
 $(document).ready(function() {

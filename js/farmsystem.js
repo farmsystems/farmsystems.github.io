@@ -287,6 +287,7 @@ Farmsystem.prototype.showTeamData = function(team) {
                 "emptyTable": 'This team doesn\'t seem to have any prospects'
             }
         });
+        that.appendParamToHrefClass('update_btn', 'return', team, false);
     }).fail(function() {
         that.clearTable();
         config.showError('Error', config.error_msgs.receiving_players);
@@ -372,6 +373,14 @@ Farmsystem.prototype._addRow = function(row_data){
         row.append(cell);
     });
     this.elements.table.append(row);
+};
+
+Farmsystem.prototype.appendParamToHrefClass = function(identifier, param, value, firstParam) {
+    var elements = $('.' + identifier);
+    $.each(elements, function(index, element) {
+        var href = element.getAttribute('href');
+        element.setAttribute('href', href + (firstParam ? '?' + param + '=' + value : '&' + param + '=' + value));
+    });
 };
 
 
