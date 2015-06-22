@@ -10,7 +10,7 @@ Currently Features
 * Submit a proposed trade involving prospects
 * Fangraph link in prospect names
 * Add new prospects through site
-* Add Update button to prospects tables
+* Update prospects info through site
 
 In Progress Features / Fixes
 ----------------------------
