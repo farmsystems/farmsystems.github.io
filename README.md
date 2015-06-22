@@ -10,12 +10,12 @@ Currently Features
 * Submit a proposed trade involving prospects
 * Fangraph link in prospect names
 * Add new prospects through site
+* Add Update button to prospects tables
 
 In Progress Features / Fixes
 ----------------------------
-* [FEATURE] Add Update and Delete button to prospects tables
+* [FEATURE] Ability to cancel pending trades
 
 Future Features / Fixes
 -----------------------
 * [FEATURE] Add Prospect Rules page
-* [FEATURE] Ability to cancel pending trades
